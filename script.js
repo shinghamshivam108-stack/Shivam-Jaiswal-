@@ -57,6 +57,14 @@ const memoryMessages = [
 "Happy Birthday 🎂 बाकी सब अपनी जगह, लेकिन honestly — उम्मीद है तुम्हारे चेहरे की smile कभी कम न हो। ❤️"
 ];
 
+// Surprise messages (hidden stars / hearts)
+const secretMessages = {
+  secretSurprise1: "⭐ You are the most brilliant supernova in this universe ⭐",
+  secretSurprise2: "💛 Every moment with you is a golden memory. Keep shining 💛",
+  secretSurprise3: "🌙 May your dreams reach the farthest galaxy, limitless and free 🌙",
+  secretSurprise4: "🌟 Your kindness lights up every dark corner – never forget that 🌟",
+  secretSurprise5: "🎁 This day is as special as you are, infinitely precious. Cheers to you! 🎁"
+};
 
 // ========== 2. DOM ELEMENTS ==========
 const introScreen = document.getElementById("introScreen");
