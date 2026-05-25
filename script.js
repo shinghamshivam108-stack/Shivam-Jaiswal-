@@ -2,7 +2,7 @@
 // =======================================================
 
 // ========== 1. GLOBAL VARIABLES & CONFIGURATION ==========
-const birthdayName = "Alexis";   // ✨ Change this to the special person's name ✨
+const birthdayName = "Garima";   // ✨ Change this to the special person's name ✨
 const audioFile = "";            // Replace with your local MP3 path: "assets/song.mp3"
 const videoFile = "";            // Replace with your video file: "assets/birthday.mp4"
 
