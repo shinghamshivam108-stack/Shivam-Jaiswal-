@@ -18,43 +18,12 @@ const galleryImages = [
 
 // Memory cards content (emotional, mature messages)
 const memoryMessages = [
-"हर साल birthday आता है, लेकिन कुछ लोगों के लिए थोड़ा extra effort करने का मन अपने आप हो जाता है। शायद तुम उन्हीं लोगों में से हो। ✨",
-
-"समय के साथ बहुत सी चीज़ें बदल जाती हैं — बातें, लोग, priorities… लेकिन कुछ लोगों के लिए अच्छी wishes कभी पुरानी नहीं होतीं। 🌙",
-
-"यह जरूरी नहीं कि हर बात हमेशा कही जाए, लेकिन कुछ लोग ऐसे होते हैं जिनके लिए दिल से अच्छा सोचना अपने आप होता रहता है। 🌸",
-
-"उम्मीद है तुम्हारा आने वाला साल तुम्हें अच्छे moments, सही लोग, नई opportunities और बहुत सारी genuine खुशियाँ दे। 💫",
-
-"ज़िंदगी कभी perfect नहीं होती, लेकिन उम्मीद है तुम्हारी जिंदगी में हमेशा ऐसे moments रहें जिन्हें याद करके मुस्कुराया जा सके। 🌼",
-
-"वैसे तो यह सिर्फ एक website है, लेकिन इसके पीछे time, effort और एक simple सी बात है — तुम्हारा birthday थोड़ा और special लगे। 🎁",
-
-"कुछ gifts expensive होते हैं, कुछ memorable… यह वाला बस अलग बनाने की कोशिश की है। क्योंकि normal wish भेजना थोड़ा boring लगा 😄",
-
-"वैसे एक बात माननी पड़ेगी — normal birthday wish भेजना easy था, लेकिन थोड़ा hatke करना ज़्यादा मज़ेदार लगा 😄",
-
-"अगर यह website थोड़ी over लगे… तो हाँ, थोड़ा time ज़्यादा लग गया था बनाने में 😂",
-
-"वैसे tension मत लेना — इसमें कोई hidden exam नहीं है, बस scroll करना है 😌",
-
-"Birthday वाले दिन calories count नहीं होतीं… तो cake बिना guilt के खाना 🎂😄",
-
-"और हाँ… इतनी लंबी website देखकर यह मत सोचना कि मैं free बैठा था 😭",
-
-"अगर यहाँ तक scroll कर लिया है… तो respect मिलता है तुम्हें 🫡😄",
-
-"वैसे honestly, simple HBD लिखकर काम चल सकता था… लेकिन थोड़ा effort वाला option चुन लिया 😌✨",
-
-"बस इतना याद रखना — birthday तुम्हारा है, लेकिन extra overthinking शायद मेरी हो गई website बनाते-बनाते 😂",
-
-"चलो अब smile करो 😄 आखिर birthday है boss 🎉",
-
-"Birthday सिर्फ age बढ़ने का reminder नहीं होता — यह एक नया chapter भी होता है। उम्मीद है तुम्हारा यह chapter बहुत अच्छा जाए। 📖",
-
-"तुम जहाँ भी रहो, जैसी भी रहो — बस genuinely खुश रहना, life enjoy करना और अपने goals पूरे करना। ⭐",
-
-"Happy Birthday 🎂 बाकी सब अपनी जगह, लेकिन honestly — उम्मीद है तुम्हारे चेहरे की smile कभी कम न हो। ❤️"
+  "✨ Your laughter echoes like starlight across the universe. Every moment with you is a treasure.",
+  "🌙 Through every season, your presence brings warmth – a rare constellation of kindness and grace.",
+  "💫 Some souls shine brighter than galaxies. Thank you for being that radiant light in ordinary days.",
+  "🌟 No grand expectations, just sincere gratitude for every memory we've gathered like fallen stars.",
+  "🎇 The world is more beautiful because you exist. Wishing you cosmic joy and endless peace.",
+  "🌌 Like the milky way, your journey is vast and magnificent. Happy Birthday, dear soul."
 ];
 
 // Surprise messages (hidden stars / hearts)
