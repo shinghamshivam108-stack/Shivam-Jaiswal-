@@ -1,54 +1,121 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-<title>Birthday Surprise</title>
-
-<link rel="stylesheet" href="style.css">
-
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes, viewport-fit=cover">
+  <title>Celestial Birthday | A Galaxy of Wishes</title>
+  <!-- Google Fonts: Elegant & Premium Typography -->
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=Inter:opsz,wght@14..32,200;14..32,300;14..32,400;14..32,500;14..32,600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-<div class="stars"></div>
+  <!-- animated stars canvas background -->
+  <canvas id="starCanvas" aria-hidden="true"></canvas>
 
-<div class="container">
+  <!-- INTRO SECTION (cinematic overlay) -->
+  <div id="introScreen" class="intro-screen">
+    <div class="intro-container">
+      <div class="cinematic-lines"></div>
+      <div class="typing-area">
+        <h1 id="typedLine1" class="glow-text gold-glow"></h1>
+        <h2 id="typedLine2" class="glow-text gold-glow"></h2>
+      </div>
+      <div class="enter-button-wrapper">
+        <button id="enterBtn" class="premium-btn enter-surprise">✨ Enter Surprise ✨</button>
+      </div>
+    </div>
+    <div class="intro-overlay"></div>
+  </div>
 
-<h3 class="small-text">
-✨ A Special Day ✨
-</h3>
+  <!-- MAIN PREMIUM PAGE (hidden initially) -->
+  <div id="mainContent" class="main-content hidden">
+    <!-- floating music widget -->
+    <div class="floating-music-player">
+      <div class="music-glow"></div>
+      <button id="playPauseBtn" class="music-control-btn" aria-label="Play/Pause Music">
+        <span id="musicIcon">🎵</span>
+      </button>
+      <div class="music-info">celestial echoes</div>
+    </div>
 
-<h1 class="title">
-Happy Birthday Garima 
-</h1>
+    <!-- hero space title -->
+    <section class="hero-welcome">
+      <div class="golden-orbit"></div>
+      <h1 class="main-title gold-gradient-text">For You, Stardust Soul</h1>
+      <p class="subtitle-premium">a journey through constellations of memories</p>
+    </section>
 
-<p class="message">
-No matter how much time passes,  
-some days still feel important ❤️
-</p>
+    <!-- PHOTO GALLERY SECTION -->
+    <section class="gallery-section">
+      <div class="section-header">
+        <span class="gold-star-divider">✦</span>
+        <h2>Galactic Frames</h2>
+        <span class="gold-star-divider">✦</span>
+      </div>
+      <div class="gallery-grid" id="galleryGrid">
+        <!-- 6 gallery items will be injected via JS, but also fallback structure, however JS will dynamically create from array for consistency -->
+      </div>
+    </section>
 
-<button id="musicBtn">
-🎵 Play Music
-</button>
+    <!-- VIDEO SECTION (cinematic) -->
+    <section class="video-section">
+      <div class="section-header">
+        <span class="gold-star-divider">✦</span>
+        <h2>Cinematic Glimpse</h2>
+        <span class="gold-star-divider">✦</span>
+      </div>
+      <div class="cinematic-video-container">
+        <video id="birthdayVideo" controls poster="https://images.unsplash.com/photo-1534447677768-be436bb09401?w=800&auto=format" class="premium-video">
+          <source src="" type="video/mp4">
+          Your browser does not support the video tag. Please place a video file (video.mp4) in ./assets/ folder.
+        </video>
+        <div class="video-note gold-small">✨ replace src with your birthday video ✨</div>
+      </div>
+    </section>
 
-<button id="enterBtn">
-Enter Surprise →
-</button>
+    <!-- MEMORIES SECTION (cards with messages) -->
+    <section class="memories-section">
+      <div class="section-header">
+        <span class="gold-star-divider">✧</span>
+        <h2>Stardust Chronicles</h2>
+        <span class="gold-star-divider">✧</span>
+      </div>
+      <div class="memories-grid" id="memoriesGrid"></div>
+    </section>
 
-</div>
+    <!-- FINAL ENDING SECTION (emotional) -->
+    <section class="ending-section">
+      <div class="cosmic-ring"></div>
+      <div class="ending-content">
+        <p class="ending-quote">No expectations.<br>Just wishing you happiness.</p>
+        <p class="ending-heart">Happy Birthday ❤️</p>
+        <div class="twinkling-stars"></div>
+      </div>
+    </section>
 
-<div id="secretPage" style="display:none;">
+    <!-- hidden surprise trigger elements (stars/hearts) scattered -->
+    <div id="secretSurprise1" class="secret-star surprise-star" data-message="✨ You are the most brilliant supernova in this universe ✨">⭐</div>
+    <div id="secretSurprise2" class="secret-heart surprise-heart" data-message="💛 Every moment with you is a golden memory 💛">❤️</div>
+    <div id="secretSurprise3" class="secret-star star-hidden2" data-message="🌙 May your dreams reach the farthest galaxy 🌙">✨</div>
+    <div id="secretSurprise4" class="secret-heart heart-float" data-message="🌟 Your kindness lights up every dark corner 🌟">💫</div>
+    <div id="secretSurprise5" class="secret-star extra-star" data-message="🎁 This day is as special as you are, infinitely precious 🎁">⭐</div>
+  </div>
 
-<h1>🌸 Birthday Memories 🌸</h1>
+  <!-- fullscreen lightbox modal for gallery -->
+  <div id="lightboxModal" class="lightbox-modal">
+    <span class="close-lightbox">&times;</span>
+    <img class="lightbox-img" id="lightboxImg" alt="expanded view">
+  </div>
 
-<p>
-A special surprise is being created...
-</p>
+  <!-- toast notification -->
+  <div id="customToast" class="premium-toast"></div>
 
-</div>
+  <audio id="bgAudio" loop preload="auto">
+    <!-- Replace with your own local MP3: './assets/birthday_song.mp3' -->
+    <source src="" type="audio/mpeg">
+  </audio>
 
-<script src="script.js"></script>
-
+  <script src="script.js"></script>
 </body>
 </html>
