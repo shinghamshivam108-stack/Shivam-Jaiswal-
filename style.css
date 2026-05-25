@@ -1,73 +1,76 @@
-
 *{
-    margin:0;
-    padding:0;
-    box-sizing:border-box;
+margin:0;
+padding:0;
+box-sizing:border-box;
 }
 
 body{
-    background:black;
-    color:white;
-    font-family:Arial, sans-serif;
-    height:100vh;
-    display:flex;
-    justify-content:center;
-    align-items:center;
-    overflow:hidden;
+background:black;
+font-family:Arial;
+color:white;
+overflow:hidden;
+height:100vh;
+display:flex;
+justify-content:center;
+align-items:center;
+text-align:center;
 }
 
-.hero{
-    text-align:center;
-    animation: fadeIn 2s ease;
+.container{
+padding:20px;
+animation:fade 2s ease;
 }
 
-.top-text{
-    color:gold;
-    margin-bottom:15px;
-    letter-spacing:3px;
+.title{
+font-size:50px;
+text-shadow:0 0 20px gold;
+margin-bottom:15px;
 }
 
-.main-title{
-    font-size:50px;
-    text-shadow:0 0 20px rgba(255,255,255,0.8);
-    animation: glow 2s infinite alternate;
+.small-text{
+color:gold;
+margin-bottom:20px;
 }
 
-.subtitle{
-    margin-top:15px;
-    color:#ccc;
-    font-size:18px;
+.message{
+font-size:18px;
+color:#ccc;
+margin-bottom:30px;
 }
 
-.btn{
-    margin-top:30px;
-    padding:14px 35px;
-    border:none;
-    border-radius:40px;
-    background:gold;
-    color:black;
-    font-size:18px;
-    cursor:pointer;
+button{
+padding:15px 30px;
+border:none;
+border-radius:30px;
+margin:10px;
+font-size:18px;
+background:gold;
+cursor:pointer;
 }
 
-@keyframes glow{
-    from{
-        text-shadow:0 0 10px white;
-    }
-
-    to{
-        text-shadow:0 0 30px gold;
-    }
+.hidden{
+display:none;
 }
 
-@keyframes fadeIn{
-    from{
-        opacity:0;
-        transform:translateY(30px);
-    }
+#secretPage{
+position:absolute;
+background:black;
+height:100vh;
+width:100%;
+display:flex;
+flex-direction:column;
+justify-content:center;
+align-items:center;
+}
 
-    to{
-        opacity:1;
-        transform:translateY(0);
-    }
+@keyframes fade{
+from{
+opacity:0;
+transform:translateY(30px);
+}
+
+to{
+opacity:1;
+transform:translateY(0);
+}
 }
