@@ -1,20 +1,15 @@
-document
-.getElementById("enterBtn")
-.addEventListener("click", function(){
+.hidden{
+display:none !important;
+}
 
-document.querySelector(".container")
-.style.display="none";
-
-document
-.getElementById("secretPage")
-.style.display="flex";
-
-});
-
-document
-.getElementById("musicBtn")
-.addEventListener("click", function(){
-
-alert("Music feature coming next 🎵");
-
-});
+#secretPage{
+position:absolute;
+top:0;
+left:0;
+background:black;
+height:100vh;
+width:100%;
+justify-content:center;
+align-items:center;
+flex-direction:column;
+}
