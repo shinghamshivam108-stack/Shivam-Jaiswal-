@@ -350,6 +350,8 @@ setInterval(() => {
 
 // ===== MAGIC PHOTO ALBUM =====
 
+document.addEventListener("DOMContentLoaded", () => {
+
 const albumImages = [
   "images/photo1.jpg",
   "images/photo2.jpg",
@@ -410,6 +412,7 @@ function startAlbum() {
         );
 
       }, 1500);
+
     }
 
   }, 3000);
@@ -446,5 +449,7 @@ pauseAlbumBtn?.addEventListener(
     "⏸ Pause Album";
 
   }, 10000);
+
+});
 
 });
