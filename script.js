@@ -371,7 +371,7 @@ function startAlbum() {
       }, 700);
       setTimeout(() => { albumImage.classList.remove("flip-animation"); }, 1500);
     }
-  }, 3000);
+  }, 5000);
 }
 
 openAlbumBtn.addEventListener("click", () => {
