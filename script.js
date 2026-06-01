@@ -349,7 +349,7 @@ setInterval(() => {
 }, 500);
 
 // ===== MAGIC PHOTO ALBUM =====
-const albumImages = ["images/photo1.jpg", "images/photo2.jpg", "images/photo3.jpg", "images/photo4.jpg", "images/photo5.jpg"];
+const albumImages = ["IMG/20260528-WA0033.jpg", "images/photo2.jpg", "images/photo3.jpg", "images/photo4.jpg", "images/photo5.jpg"];
 const openAlbumBtn = document.getElementById("openAlbumBtn");
 const albumContainer = document.getElementById("albumContainer");
 const albumImage = document.getElementById("albumImage");
