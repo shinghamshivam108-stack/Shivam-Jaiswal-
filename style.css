@@ -442,10 +442,16 @@ body {
   padding:80px 20px;
 }
 
-.album-hidden{
-  display:none;
+
+.album-hidden {
+  display: none !important;
   margin-top:30px;
 }
+
+.album-show {
+  display: block !important;
+}
+
 
 .album-frame{
   width:90%;
