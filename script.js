@@ -347,3 +347,104 @@ setInterval(() => {
     if(musicIconSpan) musicIconSpan.innerText = "🎵";
   }
 }, 500);
+
+// ===== MAGIC PHOTO ALBUM =====
+
+const albumImages = [
+  "images/photo1.jpg",
+  "images/photo2.jpg",
+  "images/photo3.jpg",
+  "images/photo4.jpg",
+  "images/photo5.jpg"
+];
+
+const openAlbumBtn =
+document.getElementById("openAlbumBtn");
+
+const albumContainer =
+document.getElementById("albumContainer");
+
+const albumImage =
+document.getElementById("albumImage");
+
+const pauseAlbumBtn =
+document.getElementById("pauseAlbumBtn");
+
+let currentAlbumIndex = 0;
+let albumPaused = false;
+let albumInterval;
+
+function startAlbum() {
+
+  albumImage.src =
+  albumImages[currentAlbumIndex];
+
+  albumInterval = setInterval(() => {
+
+    if (!albumPaused) {
+
+      albumImage.classList.add(
+      "flip-animation"
+      );
+
+      setTimeout(() => {
+
+        currentAlbumIndex++;
+
+        if (
+          currentAlbumIndex >=
+          albumImages.length
+        ) {
+          currentAlbumIndex = 0;
+        }
+
+        albumImage.src =
+        albumImages[currentAlbumIndex];
+
+      }, 700);
+
+      setTimeout(() => {
+
+        albumImage.classList.remove(
+        "flip-animation"
+        );
+
+      }, 1500);
+    }
+
+  }, 3000);
+}
+
+openAlbumBtn?.addEventListener(
+"click",
+() => {
+
+  albumContainer.classList.remove(
+  "hidden"
+  );
+
+  if (!albumInterval) {
+    startAlbum();
+  }
+
+});
+
+pauseAlbumBtn?.addEventListener(
+"click",
+() => {
+
+  albumPaused = true;
+
+  pauseAlbumBtn.innerText =
+  "▶ Resume Album";
+
+  setTimeout(() => {
+
+    albumPaused = false;
+
+    pauseAlbumBtn.innerText =
+    "⏸ Pause Album";
+
+  }, 10000);
+
+});
