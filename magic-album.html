@@ -1,1 +1,1258 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>✨ Memories Written In Stars — Magic Photo Album</title>
 
+    <!-- ========== magic-album.css (inline) ========== -->
+    <style>
+        :root {
+            --bg-deep: #06060f;
+            --bg-galaxy: #0a0a1e;
+            --gold: #d4a853;
+            --gold-light: #f0d078;
+            --gold-pale: #fff4d6;
+            --cream-page: #f7f1e0;
+            --cream-dark: #e8dcc8;
+            --spine-dark: #1a0f04;
+            --cover-dark: #1c0c02;
+            --glow-soft: rgba(212, 168, 83, 0.25);
+            --glow-strong: rgba(240, 208, 120, 0.5);
+            --text-warm: #f5ecd7;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            width: 100vw;
+            height: 100vh;
+            height: 100dvh;
+            overflow: hidden;
+            background: radial-gradient(ellipse at center, #0d0d28 0%, #060610 40%, #020208 100%);
+            font-family: 'Georgia', 'Times New Roman', 'Noto Serif', 'Playfair Display', serif;
+            user-select: none;
+            -webkit-user-select: none;
+            -webkit-tap-highlight-color: transparent;
+            cursor: default;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+
+        /* ── Starfield Canvas ── */
+        #particlesCanvas {
+            position: fixed;
+            inset: 0;
+            z-index: 1;
+            pointer-events: none;
+        }
+
+        /* ── Light Rays Container ── */
+        .light-rays {
+            position: fixed;
+            inset: 0;
+            z-index: 2;
+            pointer-events: none;
+            opacity: 0.55;
+            background:
+                radial-gradient(ellipse at 50% 55%, rgba(240, 208, 120, 0.08) 0%, transparent 50%),
+                radial-gradient(ellipse at 50% 50%, rgba(212, 168, 83, 0.04) 0%, transparent 70%);
+            animation: raysPulse 6s ease-in-out infinite;
+        }
+        @keyframes raysPulse {
+            0%,
+            100% {
+                opacity: 0.45;
+            }
+            50% {
+                opacity: 0.7;
+            }
+        }
+
+        /* ── Loading Overlay ── */
+        #loadingOverlay {
+            position: fixed;
+            inset: 0;
+            z-index: 100;
+            background: #050510;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: opacity 0.8s ease, visibility 0.8s ease;
+            flex-direction: column;
+        }
+        #loadingOverlay.hidden {
+            opacity: 0;
+            visibility: hidden;
+            pointer-events: none;
+        }
+        .loader-ring {
+            width: 60px;
+            height: 60px;
+            border: 2px solid rgba(212, 168, 83, 0.2);
+            border-top-color: #d4a853;
+            border-radius: 50%;
+            animation: loaderSpin 1.2s cubic-bezier(0.6, 0.2, 0.4, 0.8) infinite;
+            box-shadow: 0 0 30px rgba(212, 168, 83, 0.35), 0 0 60px rgba(212, 168, 83, 0.15);
+        }
+        @keyframes loaderSpin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+        .loader-text {
+            margin-top: 20px;
+            color: #d4a853;
+            font-size: 0.95rem;
+            letter-spacing: 0.25em;
+            animation: loaderFade 1.6s ease-in-out infinite;
+        }
+        @keyframes loaderFade {
+            0%,
+            100% {
+                opacity: 0.5;
+            }
+            50% {
+                opacity: 1;
+            }
+        }
+
+        /* ── Intro Overlay ── */
+        #introOverlay {
+            position: fixed;
+            inset: 0;
+            z-index: 90;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            pointer-events: all;
+            transition: opacity 1s ease, visibility 1s ease;
+        }
+        #introOverlay.hidden {
+            opacity: 0;
+            visibility: hidden;
+            pointer-events: none;
+        }
+        .intro-title {
+            font-size: clamp(1.6rem, 4vw, 3rem);
+            color: #f0d078;
+            text-align: center;
+            letter-spacing: 0.12em;
+            text-shadow: 0 0 40px rgba(240, 208, 120, 0.7), 0 0 80px rgba(212, 168, 83, 0.4), 0 0 120px rgba(180, 130, 50, 0.3);
+            animation: titleShimmer 3s ease-in-out infinite;
+            margin-bottom: 32px;
+            line-height: 1.4;
+        }
+        @keyframes titleShimmer {
+            0%,
+            100% {
+                text-shadow: 0 0 40px rgba(240, 208, 120, 0.7), 0 0 80px rgba(212, 168, 83, 0.4);
+            }
+            50% {
+                text-shadow: 0 0 60px rgba(255, 220, 140, 0.95), 0 0 110px rgba(240, 180, 90, 0.6), 0 0 160px rgba(200, 150, 60, 0.4);
+            }
+        }
+        .btn-open-album {
+            display: inline-block;
+            padding: 16px 40px;
+            font-size: clamp(1rem, 2.2vw, 1.25rem);
+            font-family: inherit;
+            letter-spacing: 0.1em;
+            color: #1a0a00;
+            background: linear-gradient(135deg, #f0d078 0%, #d4a853 40%, #b8862d 100%);
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            box-shadow: 0 0 40px rgba(212, 168, 83, 0.6), 0 0 80px rgba(212, 168, 83, 0.3), 0 8px 30px rgba(0, 0, 0, 0.5);
+            transition: all 0.4s ease;
+            position: relative;
+            overflow: hidden;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+        .btn-open-album:hover {
+            box-shadow: 0 0 60px rgba(240, 208, 120, 0.9), 0 0 120px rgba(212, 168, 83, 0.5), 0 12px 40px rgba(0, 0, 0, 0.6);
+            transform: translateY(-2px) scale(1.03);
+        }
+        .btn-open-album:active {
+            transform: scale(0.97);
+            transition: transform 0.15s ease;
+        }
+        .btn-open-album::after {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.35) 0%, transparent 60%);
+            animation: btnShine 3s ease-in-out infinite;
+            pointer-events: none;
+        }
+        @keyframes btnShine {
+            0%,
+            100% {
+                transform: translate(-30%, -30%) rotate(0deg);
+                opacity: 0;
+            }
+            50% {
+                transform: translate(20%, 20%) rotate(180deg);
+                opacity: 1;
+            }
+        }
+
+        /* ── Book Scene ── */
+        #bookScene {
+            position: relative;
+            z-index: 10;
+            perspective: 1800px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            transform: scale(0.6);
+            transition: opacity 1.2s cubic-bezier(0.25, 0.1, 0.1, 1), transform 1.2s cubic-bezier(0.25, 0.1, 0.1, 1);
+            pointer-events: none;
+        }
+        #bookScene.revealed {
+            opacity: 1;
+            transform: scale(1);
+            pointer-events: all;
+        }
+
+        .book {
+            position: relative;
+            width: clamp(300px, 78vw, 880px);
+            height: clamp(220px, 52vw, 600px);
+            transform: rotateX(4deg);
+            transform-style: preserve-3d;
+            display: flex;
+            align-items: stretch;
+            justify-content: center;
+            filter: drop-shadow(0 20px 50px rgba(0, 0, 0, 0.7)) drop-shadow(0 0 60px rgba(212, 168, 83, 0.2));
+            transition: filter 0.8s ease;
+        }
+
+        /* ── Book Cover Frame ── */
+        .book-cover-frame {
+            position: absolute;
+            inset: -14px -18px;
+            border-radius: 8px 14px 14px 8px;
+            background: linear-gradient(180deg, #2a1508 0%, #1a0a02 40%, #0f0500 100%);
+            z-index: -1;
+            box-shadow:
+                inset 0 0 0 3px rgba(180, 130, 60, 0.25),
+                inset 0 0 0 6px rgba(100, 60, 20, 0.15),
+                0 0 0 2px rgba(160, 110, 40, 0.3),
+                0 8px 40px rgba(0, 0, 0, 0.6);
+            pointer-events: none;
+        }
+        .book-cover-frame::before {
+            content: '';
+            position: absolute;
+            top: 8px;
+            left: 12px;
+            right: 12px;
+            bottom: 8px;
+            border: 1px solid rgba(200, 155, 70, 0.2);
+            border-radius: 3px 8px 8px 3px;
+            pointer-events: none;
+        }
+        /* Gold corner ornaments */
+        .book-cover-frame::after {
+            content: '';
+            position: absolute;
+            inset: 4px;
+            border: 1px solid rgba(180, 130, 50, 0.12);
+            border-radius: 5px 10px 10px 5px;
+            pointer-events: none;
+            box-shadow:
+                inset 14px 0 20px -10px rgba(0, 0, 0, 0.5),
+                inset -14px 0 20px -10px rgba(0, 0, 0, 0.5);
+        }
+
+        /* ── Spine ── */
+        .spine {
+            position: absolute;
+            top: -14px;
+            bottom: -14px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 18px;
+            z-index: 5;
+            background: linear-gradient(90deg,
+                    #1a0a02 0%, #2a1508 20%, #3d1f0a 40%, #2a1508 60%, #1a0a02 80%, #0f0500 100%);
+            border-radius: 3px;
+            box-shadow:
+                0 0 0 1px rgba(180, 130, 50, 0.35),
+                inset 0 0 8px rgba(0, 0, 0, 0.7),
+                0 4px 20px rgba(0, 0, 0, 0.5);
+            pointer-events: none;
+        }
+        .spine::before {
+            content: '';
+            position: absolute;
+            top: 15%;
+            bottom: 15%;
+            left: 3px;
+            width: 2px;
+            background: rgba(200, 155, 70, 0.5);
+            border-radius: 1px;
+            box-shadow: 0 0 6px rgba(200, 150, 60, 0.6);
+        }
+        .spine::after {
+            content: '';
+            position: absolute;
+            top: 15%;
+            bottom: 15%;
+            right: 3px;
+            width: 2px;
+            background: rgba(200, 155, 70, 0.5);
+            border-radius: 1px;
+            box-shadow: 0 0 6px rgba(200, 150, 60, 0.6);
+        }
+
+        /* ── Page Areas ── */
+        .pages-container {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            z-index: 2;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+        .page-side {
+            flex: 1;
+            position: relative;
+            background: var(--cream-page);
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow:
+                inset 2px 0 12px rgba(0, 0, 0, 0.08),
+                inset -2px 0 12px rgba(0, 0, 0, 0.08);
+        }
+        .page-left {
+            border-right: none;
+            box-shadow:
+                inset 8px 0 25px -5px rgba(0, 0, 0, 0.12),
+                inset 2px 0 8px rgba(0, 0, 0, 0.05);
+            border-radius: 4px 0 0 4px;
+        }
+        .page-right {
+            border-left: none;
+            box-shadow:
+                inset -8px 0 25px -5px rgba(0, 0, 0, 0.12),
+                inset -2px 0 8px rgba(0, 0, 0, 0.05);
+            border-radius: 0 4px 4px 0;
+        }
+        .page-side img {
+            width: 88%;
+            height: 84%;
+            object-fit: cover;
+            border-radius: 3px;
+            box-shadow:
+                0 2px 8px rgba(0, 0, 0, 0.18),
+                0 0 0 3px rgba(255, 255, 255, 0.55),
+                0 0 0 5px rgba(180, 150, 110, 0.25);
+            transition: transform 0.6s ease;
+            animation: photoBreathe 8s ease-in-out infinite;
+            pointer-events: none;
+        }
+        @keyframes photoBreathe {
+            0%,
+            100% {
+                transform: scale(1);
+            }
+            40% {
+                transform: scale(1.025);
+            }
+            70% {
+                transform: scale(1.01);
+            }
+        }
+
+        /* Page texture overlay */
+        .page-side::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            pointer-events: none;
+            background:
+                repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(180, 150, 120, 0.015) 2px, rgba(180, 150, 120, 0.015) 3px),
+                radial-gradient(ellipse at center, transparent 60%, rgba(180, 140, 100, 0.06) 100%);
+            z-index: 1;
+        }
+
+        /* ── Turning Page ── */
+        .turning-page-wrapper {
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 50%;
+            height: 100%;
+            z-index: 20;
+            transform-origin: 0% 50%;
+            transform-style: preserve-3d;
+            pointer-events: none;
+            transition: none;
+        }
+        .turning-page-wrapper.animating {
+            transition: transform 1.6s cubic-bezier(0.42, 0.0, 0.28, 1.0);
+        }
+        .turning-page-wrapper .page-face {
+            position: absolute;
+            inset: 0;
+            backface-visibility: hidden;
+            -webkit-backface-visibility: hidden;
+            border-radius: 0 4px 4px 0;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--cream-page);
+            box-shadow:
+                inset -8px 0 25px -5px rgba(0, 0, 0, 0.12),
+                inset -2px 0 8px rgba(0, 0, 0, 0.05);
+        }
+        .turning-page-wrapper .page-face.front {
+            z-index: 2;
+        }
+        .turning-page-wrapper .page-face.back {
+            transform: rotateY(180deg);
+            z-index: 1;
+            border-radius: 4px 0 0 4px;
+            box-shadow:
+                inset 8px 0 25px -5px rgba(0, 0, 0, 0.12),
+                inset 2px 0 8px rgba(0, 0, 0, 0.05);
+        }
+        .turning-page-wrapper .page-face img {
+            width: 88%;
+            height: 84%;
+            object-fit: cover;
+            border-radius: 3px;
+            box-shadow:
+                0 2px 8px rgba(0, 0, 0, 0.18),
+                0 0 0 3px rgba(255, 255, 255, 0.55),
+                0 0 0 5px rgba(180, 150, 110, 0.25);
+            pointer-events: none;
+        }
+        .turning-page-wrapper .page-face::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            pointer-events: none;
+            background:
+                repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(180, 150, 120, 0.015) 2px, rgba(180, 150, 120, 0.015) 3px),
+                radial-gradient(ellipse at center, transparent 60%, rgba(180, 140, 100, 0.06) 100%);
+            z-index: 1;
+        }
+
+        /* Turning shadow */
+        .turning-shadow {
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 50%;
+            height: 100%;
+            z-index: 19;
+            pointer-events: none;
+            background: transparent;
+            transition: background 0.3s ease;
+        }
+        .turning-shadow.active {
+            background: rgba(0, 0, 0, 0.25);
+            box-shadow: -30px 0 60px 20px rgba(0, 0, 0, 0.35);
+            transition: all 1.6s cubic-bezier(0.42, 0.0, 0.28, 1.0);
+        }
+
+        /* ── Book Glow ── */
+        .book-glow {
+            position: absolute;
+            inset: -30px -40px;
+            z-index: -2;
+            pointer-events: none;
+            border-radius: 20px;
+            background: radial-gradient(ellipse at center, rgba(240, 208, 120, 0.1) 0%, transparent 65%);
+            animation: glowBreathe 5s ease-in-out infinite;
+        }
+        @keyframes glowBreathe {
+            0%,
+            100% {
+                opacity: 0.7;
+                transform: scale(1);
+            }
+            50% {
+                opacity: 1;
+                transform: scale(1.04);
+            }
+        }
+
+        /* ── Controls ── */
+        #controlsBar {
+            position: fixed;
+            bottom: clamp(20px, 4vh, 40px);
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 30;
+            display: flex;
+            gap: 16px;
+            align-items: center;
+            opacity: 0;
+            transition: opacity 0.8s ease;
+            pointer-events: none;
+        }
+        #controlsBar.visible {
+            opacity: 1;
+            pointer-events: all;
+        }
+        .ctrl-btn {
+            padding: 10px 22px;
+            border-radius: 50px;
+            border: 1px solid rgba(212, 168, 83, 0.5);
+            background: rgba(20, 15, 5, 0.7);
+            color: #f0d078;
+            font-family: inherit;
+            font-size: clamp(0.8rem, 1.6vw, 0.95rem);
+            letter-spacing: 0.06em;
+            cursor: pointer;
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            transition: all 0.35s ease;
+            box-shadow: 0 0 20px rgba(212, 168, 83, 0.2);
+            white-space: nowrap;
+        }
+        .ctrl-btn:hover {
+            background: rgba(40, 30, 10, 0.85);
+            border-color: rgba(240, 208, 120, 0.8);
+            box-shadow: 0 0 35px rgba(212, 168, 83, 0.45);
+        }
+        .ctrl-btn.pause-btn {
+            min-width: 100px;
+            text-align: center;
+        }
+        .back-link {
+            position: fixed;
+            top: clamp(16px, 3vh, 30px);
+            left: clamp(16px, 3vw, 30px);
+            z-index: 30;
+            color: rgba(212, 168, 83, 0.8);
+            text-decoration: none;
+            font-family: inherit;
+            font-size: 0.9rem;
+            letter-spacing: 0.08em;
+            opacity: 0;
+            transition: all 0.8s ease;
+            pointer-events: none;
+            padding: 8px 16px;
+            border-radius: 50px;
+            border: 1px solid rgba(212, 168, 83, 0.3);
+            background: rgba(10, 8, 5, 0.5);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+        }
+        .back-link.visible {
+            opacity: 1;
+            pointer-events: all;
+        }
+        .back-link:hover {
+            color: #f0d078;
+            border-color: rgba(240, 208, 120, 0.7);
+            box-shadow: 0 0 25px rgba(212, 168, 83, 0.35);
+        }
+
+        /* ── Responsive ── */
+        @media (max-width: 768px) {
+            .book {
+                width: 92vw;
+                height: 58vw;
+                transform: rotateX(3deg);
+            }
+            .book-cover-frame {
+                inset: -10px -12px;
+            }
+            .spine {
+                width: 12px;
+                top: -10px;
+                bottom: -10px;
+            }
+            .page-side img {
+                width: 90%;
+                height: 86%;
+                box-shadow: 0 1px 5px rgba(0, 0, 0, 0.16), 0 0 0 2px rgba(255, 255, 255, 0.5), 0 0 0 3.5px rgba(180, 150, 110, 0.22);
+            }
+            .turning-page-wrapper .page-face img {
+                width: 90%;
+                height: 86%;
+                box-shadow: 0 1px 5px rgba(0, 0, 0, 0.16), 0 0 0 2px rgba(255, 255, 255, 0.5), 0 0 0 3.5px rgba(180, 150, 110, 0.22);
+            }
+            .ctrl-btn {
+                padding: 8px 16px;
+                font-size: 0.78rem;
+            }
+            #controlsBar {
+                gap: 10px;
+                bottom: 16px;
+            }
+            .intro-title {
+                font-size: 1.4rem;
+                padding: 0 20px;
+            }
+        }
+        @media (max-width: 400px) {
+            .book {
+                width: 96vw;
+                height: 64vw;
+                transform: rotateX(2deg);
+            }
+            .book-cover-frame {
+                inset: -7px -9px;
+            }
+            .spine {
+                width: 10px;
+                top: -7px;
+                bottom: -7px;
+            }
+            .page-side img {
+                width: 92%;
+                height: 88%;
+            }
+            .turning-page-wrapper .page-face img {
+                width: 92%;
+                height: 88%;
+            }
+            .ctrl-btn {
+                padding: 7px 12px;
+                font-size: 0.7rem;
+                letter-spacing: 0.03em;
+            }
+            #controlsBar {
+                gap: 6px;
+                bottom: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ── Particle Canvas ── -->
+    <canvas id="particlesCanvas"></canvas>
+
+    <!-- ── Light Rays ── -->
+    <div class="light-rays"></div>
+
+    <!-- ── Loading Overlay ── -->
+    <div id="loadingOverlay">
+        <div class="loader-ring"></div>
+        <div class="loader-text">Gathering Stardust…</div>
+    </div>
+
+    <!-- ── Intro Overlay ── -->
+    <div id="introOverlay">
+        <h1 class="intro-title">Memories Written In Stars&nbsp;✨</h1>
+        <button class="btn-open-album" id="btnOpenAlbum">✨ Open Magic Album</button>
+    </div>
+
+    <!-- ── Back Link ── -->
+    <a href="#" class="back-link" id="backLink" title="Back to Main Website">← Back</a>
+
+    <!-- ── Book Scene ── -->
+    <div id="bookScene">
+        <div class="book" id="book">
+            <!-- Cover frame -->
+            <div class="book-cover-frame"></div>
+            <!-- Spine -->
+            <div class="spine"></div>
+            <!-- Book glow -->
+            <div class="book-glow"></div>
+            <!-- Pages -->
+            <div class="pages-container" id="pagesContainer">
+                <div class="page-side page-left" id="pageLeft">
+                    <img id="imgLeft" src="" alt="Memory" loading="eager">
+                </div>
+                <div class="page-side page-right" id="pageRight">
+                    <img id="imgRight" src="" alt="Memory" loading="eager">
+                </div>
+            </div>
+            <!-- Turning page (hidden by default) -->
+            <div class="turning-page-wrapper" id="turningPageWrapper">
+                <div class="page-face front" id="turningFront">
+                    <img id="imgTurningFront" src="" alt="">
+                </div>
+                <div class="page-face back" id="turningBack">
+                    <img id="imgTurningBack" src="" alt="">
+                </div>
+            </div>
+            <!-- Turning shadow -->
+            <div class="turning-shadow" id="turningShadow"></div>
+        </div>
+    </div>
+
+    <!-- ── Controls Bar ── -->
+    <div id="controlsBar">
+        <button class="ctrl-btn pause-btn" id="btnPause" title="Pause / Resume">❚❚&nbsp;Pause</button>
+    </div>
+
+    <!-- ========== magic-album.js (inline) ========== -->
+    <script>
+        (function() {
+            // ─────────────────────────────────────────────
+            // 📸 PHOTO CONFIGURATION
+            // Replace the paths below with your own photos.
+            // For 50–100 photos, add entries following the pattern.
+            // Supported formats: .jpg, .jpeg, .png, .webp
+            //
+            // Example:
+            //   'photos/birthday-001.jpg',
+            //   'photos/birthday-002.jpg',
+            //   ... up to 100 entries
+            //
+            // For demo purposes, we use beautiful placeholder images.
+            // ─────────────────────────────────────────────
+            const PHOTOS = [
+                'https://picsum.photos/seed/memory01/600/750',
+                'https://picsum.photos/seed/memory02/600/750',
+                'https://picsum.photos/seed/memory03/600/750',
+                'https://picsum.photos/seed/memory04/600/750',
+                'https://picsum.photos/seed/memory05/600/750',
+                'https://picsum.photos/seed/memory06/600/750',
+                'https://picsum.photos/seed/memory07/600/750',
+                'https://picsum.photos/seed/memory08/600/750',
+                'https://picsum.photos/seed/memory09/600/750',
+                'https://picsum.photos/seed/memory10/600/750',
+                'https://picsum.photos/seed/memory11/600/750',
+                'https://picsum.photos/seed/memory12/600/750',
+                'https://picsum.photos/seed/memory13/600/750',
+                'https://picsum.photos/seed/memory14/600/750',
+                'https://picsum.photos/seed/memory15/600/750',
+                'https://picsum.photos/seed/memory16/600/750',
+                'https://picsum.photos/seed/memory17/600/750',
+                'https://picsum.photos/seed/memory18/600/750',
+                'https://picsum.photos/seed/memory19/600/750',
+                'https://picsum.photos/seed/memory20/600/750',
+                'https://picsum.photos/seed/memory21/600/750',
+                'https://picsum.photos/seed/memory22/600/750',
+                'https://picsum.photos/seed/memory23/600/750',
+                'https://picsum.photos/seed/memory24/600/750',
+                'https://picsum.photos/seed/memory25/600/750',
+                'https://picsum.photos/seed/memory26/600/750',
+                'https://picsum.photos/seed/memory27/600/750',
+                'https://picsum.photos/seed/memory28/600/750',
+                'https://picsum.photos/seed/memory29/600/750',
+                'https://picsum.photos/seed/memory30/600/750',
+                'https://picsum.photos/seed/memory31/600/750',
+                'https://picsum.photos/seed/memory32/600/750',
+                'https://picsum.photos/seed/memory33/600/750',
+                'https://picsum.photos/seed/memory34/600/750',
+                'https://picsum.photos/seed/memory35/600/750',
+                'https://picsum.photos/seed/memory36/600/750',
+                'https://picsum.photos/seed/memory37/600/750',
+                'https://picsum.photos/seed/memory38/600/750',
+                'https://picsum.photos/seed/memory39/600/750',
+                'https://picsum.photos/seed/memory40/600/750',
+                'https://picsum.photos/seed/memory41/600/750',
+                'https://picsum.photos/seed/memory42/600/750',
+                'https://picsum.photos/seed/memory43/600/750',
+                'https://picsum.photos/seed/memory44/600/750',
+                'https://picsum.photos/seed/memory45/600/750',
+                'https://picsum.photos/seed/memory46/600/750',
+                'https://picsum.photos/seed/memory47/600/750',
+                'https://picsum.photos/seed/memory48/600/750',
+                'https://picsum.photos/seed/memory49/600/750',
+                'https://picsum.photos/seed/memory50/600/750',
+            ];
+
+            // ─────────────────────────────────────────────
+            // DOM ELEMENTS
+            // ─────────────────────────────────────────────
+            const loadingOverlay = document.getElementById('loadingOverlay');
+            const introOverlay = document.getElementById('introOverlay');
+            const btnOpenAlbum = document.getElementById('btnOpenAlbum');
+            const bookScene = document.getElementById('bookScene');
+            const backLink = document.getElementById('backLink');
+            const controlsBar = document.getElementById('controlsBar');
+            const btnPause = document.getElementById('btnPause');
+            const imgLeft = document.getElementById('imgLeft');
+            const imgRight = document.getElementById('imgRight');
+            const turningPageWrapper = document.getElementById('turningPageWrapper');
+            const imgTurningFront = document.getElementById('imgTurningFront');
+            const imgTurningBack = document.getElementById('imgTurningBack');
+            const turningShadow = document.getElementById('turningShadow');
+            const canvas = document.getElementById('particlesCanvas');
+            const ctx = canvas.getContext('2d');
+
+            // ─────────────────────────────────────────────
+            // STATE
+            // ─────────────────────────────────────────────
+            let currentSpread = 0; // which spread (pair) is visible
+            const totalSpreads = Math.floor(PHOTOS.length / 2); // each spread = 2 photos
+            let isPaused = false;
+            let autoTurnTimeout = null;
+            let autoResumeTimeout = null;
+            let isTurning = false;
+            let albumOpen = false;
+
+            // ─────────────────────────────────────────────
+            // CANVAS SETUP
+            // ─────────────────────────────────────────────
+            function resizeCanvas() {
+                canvas.width = window.innerWidth;
+                canvas.height = window.innerHeight;
+            }
+            resizeCanvas();
+            window.addEventListener('resize', resizeCanvas);
+
+            // ─────────────────────────────────────────────
+            // PARTICLE SYSTEM (Fireflies + Stars + Sparkles)
+            // ─────────────────────────────────────────────
+            const particles = [];
+            const PARTICLE_COUNT = 90;
+
+            class Particle {
+                constructor(type) {
+                    this.type = type; // 'firefly' | 'star' | 'sparkle'
+                    this.reset();
+                }
+                reset() {
+                    this.x = Math.random() * canvas.width;
+                    this.y = Math.random() * canvas.height;
+                    this.baseX = this.x;
+                    this.baseY = this.y;
+                    this.size = this.type === 'firefly' ? (2 + Math.random() * 4) :
+                        this.type === 'star' ? (1 + Math.random() * 2.5) :
+                        (0.5 + Math.random() * 1.8);
+                    this.opacity = 0.25 + Math.random() * 0.7;
+                    this.phase = Math.random() * Math.PI * 2;
+                    this.speed = 0.003 + Math.random() * 0.02;
+                    this.amplitude = this.type === 'firefly' ? (30 + Math.random() * 80) :
+                        this.type === 'star' ? (15 + Math.random() * 50) :
+                        (20 + Math.random() * 60);
+                    this.driftY = -0.1 - Math.random() * 0.4; // upward drift
+                    this.twinkleSpeed = 0.02 + Math.random() * 0.06;
+                    this.twinklePhase = Math.random() * Math.PI * 2;
+                    this.color =
+                        this.type === 'firefly' ?
+                        `rgba(255,210,100,` :
+                        this.type === 'star' ? `rgba(255,240,210,` : `rgba(240,200,130,`;
+                    this.glowRadius = this.type === 'firefly' ? this.size * 3 : this.size * 1.5;
+                }
+                update() {
+                    this.phase += this.speed;
+                    this.twinklePhase += this.twinkleSpeed;
+                    const twinkle = 0.5 + 0.5 * Math.sin(this.twinklePhase);
+
+                    if (this.type === 'firefly') {
+                        // Organic figure-8-ish movement
+                        this.x = this.baseX + Math.sin(this.phase) * this.amplitude * 0.7 +
+                            Math.cos(this.phase * 1.7) * this.amplitude * 0.3;
+                        this.y = this.baseY + Math.cos(this.phase) * this.amplitude * 0.5 +
+                            Math.sin(this.phase * 0.6) * this.amplitude * 0.4;
+                        this.baseY += this.driftY * 0.3;
+                    } else if (this.type === 'star') {
+                        this.x = this.baseX + Math.sin(this.phase) * this.amplitude * 0.4;
+                        this.y = this.baseY + Math.cos(this.phase * 1.3) * this.amplitude * 0.35;
+                        this.baseY += this.driftY;
+                    } else {
+                        // sparkle
+                        this.x = this.baseX + Math.sin(this.phase * 2.1) * this.amplitude * 0.5;
+                        this.y = this.baseY + Math.cos(this.phase * 1.5) * this.amplitude * 0.45;
+                        this.baseY += this.driftY * 1.4;
+                    }
+
+                    // Wrap around screen
+                    if (this.y < -40) { this.y = canvas.height + 40;
+                        this.baseY = this.y; }
+                    if (this.y > canvas.height + 40) { this.y = -40;
+                        this.baseY = this.y; }
+                    if (this.x < -40) { this.x = canvas.width + 40;
+                        this.baseX = this.x; }
+                    if (this.x > canvas.width + 40) { this.x = -40;
+                        this.baseX = this.x; }
+
+                    this.currentOpacity = this.opacity * (0.55 + 0.45 * twinkle);
+                    this.currentSize = this.size * (0.85 + 0.15 * twinkle);
+                }
+                draw(ctx) {
+                    ctx.save();
+                    const alpha = this.currentOpacity;
+                    const sz = this.currentSize;
+                    const glow = this.glowRadius;
+
+                    // Outer glow
+                    const gradient = ctx.createRadialGradient(this.x, this.y, sz * 0.2, this.x, this.y, glow);
+                    gradient.addColorStop(0, this.color + (alpha) + ')');
+                    gradient.addColorStop(0.35, this.color + (alpha * 0.5) + ')');
+                    gradient.addColorStop(1, this.color + '0)');
+                    ctx.fillStyle = gradient;
+                    ctx.beginPath();
+                    ctx.arc(this.x, this.y, glow, 0, Math.PI * 2);
+                    ctx.fill();
+
+                    // Bright core
+                    ctx.fillStyle = this.color + (Math.min(1, alpha * 1.3)) + ')';
+                    ctx.beginPath();
+                    ctx.arc(this.x, this.y, sz * 0.55, 0, Math.PI * 2);
+                    ctx.fill();
+
+                    // If star type, add a subtle cross sparkle
+                    if (this.type === 'star' && this.currentOpacity > 0.5) {
+                        ctx.strokeStyle = this.color + (alpha * 0.6) + ')';
+                        ctx.lineWidth = 0.6;
+                        ctx.beginPath();
+                        ctx.moveTo(this.x - sz * 2.5, this.y);
+                        ctx.lineTo(this.x + sz * 2.5, this.y);
+                        ctx.moveTo(this.x, this.y - sz * 2.5);
+                        ctx.lineTo(this.x, this.y + sz * 2.5);
+                        ctx.stroke();
+                    }
+                    ctx.restore();
+                }
+            }
+
+            // Create particles
+            for (let i = 0; i < PARTICLE_COUNT; i++) {
+                const rand = Math.random();
+                const type = rand < 0.4 ? 'firefly' : rand < 0.75 ? 'star' : 'sparkle';
+                particles.push(new Particle(type));
+            }
+
+            function animateParticles() {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+                // Subtle ambient vignette on canvas
+                const vignetteGrad = ctx.createRadialGradient(
+                    canvas.width / 2, canvas.height / 2, canvas.width * 0.25,
+                    canvas.width / 2, canvas.height / 2, canvas.width * 0.75
+                );
+                vignetteGrad.addColorStop(0, 'rgba(0,0,0,0)');
+                vignetteGrad.addColorStop(1, 'rgba(0,0,0,0.45)');
+                ctx.fillStyle = vignetteGrad;
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+                for (const p of particles) {
+                    p.update();
+                    p.draw(ctx);
+                }
+                requestAnimationFrame(animateParticles);
+            }
+            animateParticles();
+
+            // ─────────────────────────────────────────────
+            // BOOK PAGE MANAGEMENT
+            // ─────────────────────────────────────────────
+            function getSpreadPhotos(spreadIndex) {
+                // Returns [leftPhotoUrl, rightPhotoUrl] for the given spread
+                const idx = spreadIndex % totalSpreads;
+                const leftIdx = idx * 2;
+                const rightIdx = leftIdx + 1;
+                return [PHOTOS[leftIdx], PHOTOS[rightIdx]];
+            }
+
+            function updateVisiblePages(spreadIndex) {
+                const [leftUrl, rightUrl] = getSpreadPhotos(spreadIndex);
+                imgLeft.src = leftUrl;
+                imgRight.src = rightUrl;
+                // Reset photo breathe animation
+                imgLeft.style.animation = 'none';
+                imgRight.style.animation = 'none';
+                void imgLeft.offsetWidth;
+                void imgRight.offsetWidth;
+                imgLeft.style.animation = 'photoBreathe 8s ease-in-out infinite';
+                imgRight.style.animation = 'photoBreathe 8s ease-in-out infinite';
+            }
+
+            function resetTurningPage() {
+                turningPageWrapper.classList.remove('animating');
+                turningPageWrapper.style.transform = 'rotateY(0deg)';
+                turningShadow.classList.remove('active');
+                turningShadow.style.background = 'transparent';
+                turningShadow.style.boxShadow = 'none';
+            }
+
+            function performPageTurn() {
+                if (isTurning) return;
+                if (totalSpreads <= 1) return;
+
+                isTurning = true;
+
+                // Current spread photos
+                const currentPhotos = getSpreadPhotos(currentSpread);
+                const nextSpread = (currentSpread + 1) % totalSpreads;
+                const nextPhotos = getSpreadPhotos(nextSpread);
+
+                // Set up turning page:
+                // Front shows current RIGHT photo
+                // Back shows NEXT LEFT photo
+                imgTurningFront.src = currentPhotos[1];
+                imgTurningBack.src = nextPhotos[0];
+
+                // Position the turning wrapper over the right page
+                turningPageWrapper.style.transform = 'rotateY(0deg)';
+                turningPageWrapper.classList.remove('animating');
+                turningShadow.classList.remove('active');
+                turningShadow.style.background = 'transparent';
+                turningShadow.style.boxShadow = 'none';
+
+                // Force layout
+                void turningPageWrapper.offsetWidth;
+
+                // Activate shadow
+                turningShadow.classList.add('active');
+
+                // Start animation
+                requestAnimationFrame(() => {
+                    turningPageWrapper.classList.add('animating');
+                    turningPageWrapper.style.transform = 'rotateY(-180deg)';
+                });
+
+                // When animation completes (1.6s)
+                const animationDuration = 1600;
+                setTimeout(() => {
+                    // Update the spread
+                    currentSpread = nextSpread;
+                    updateVisiblePages(currentSpread);
+                    // Reset turning page
+                    resetTurningPage();
+                    isTurning = false;
+
+                    // Schedule next auto-turn if not paused
+                    if (!isPaused && albumOpen) {
+                        scheduleAutoTurn();
+                    }
+                }, animationDuration);
+            }
+
+            function scheduleAutoTurn() {
+                if (autoTurnTimeout) clearTimeout(autoTurnTimeout);
+                if (!isPaused && albumOpen && !isTurning) {
+                    autoTurnTimeout = setTimeout(() => {
+                        if (!isPaused && albumOpen && !isTurning) {
+                            performPageTurn();
+                        }
+                    }, 8000); // 8 seconds between turns
+                }
+            }
+
+            function cancelAutoTurn() {
+                if (autoTurnTimeout) {
+                    clearTimeout(autoTurnTimeout);
+                    autoTurnTimeout = null;
+                }
+            }
+
+            function cancelAutoResume() {
+                if (autoResumeTimeout) {
+                    clearTimeout(autoResumeTimeout);
+                    autoResumeTimeout = null;
+                }
+            }
+
+            function setPaused(paused) {
+                isPaused = paused;
+                cancelAutoTurn();
+                cancelAutoResume();
+
+                if (paused) {
+                    btnPause.innerHTML = '▶&nbsp;Resume';
+                    btnPause.style.borderColor = 'rgba(240,180,100,0.6)';
+                    // Auto-resume after 10 seconds
+                    autoResumeTimeout = setTimeout(() => {
+                        setPaused(false);
+                        scheduleAutoTurn();
+                    }, 10000);
+                } else {
+                    btnPause.innerHTML = '❚❚&nbsp;Pause';
+                    btnPause.style.borderColor = 'rgba(212,168,83,0.5)';
+                    scheduleAutoTurn();
+                }
+            }
+
+            // ─────────────────────────────────────────────
+            // OPEN ALBUM SEQUENCE
+            // ─────────────────────────────────────────────
+            function openAlbum() {
+                if (albumOpen) return;
+                albumOpen = true;
+
+                // Hide intro
+                introOverlay.classList.add('hidden');
+
+                // Reveal book
+                setTimeout(() => {
+                    bookScene.classList.add('revealed');
+                    backLink.classList.add('visible');
+                    controlsBar.classList.add('visible');
+                }, 400);
+
+                // Initialize pages
+                updateVisiblePages(currentSpread);
+                resetTurningPage();
+
+                // Start auto page turning after a short delay
+                setTimeout(() => {
+                    scheduleAutoTurn();
+                }, 2000);
+            }
+
+            // ─────────────────────────────────────────────
+            // INITIAL LOADING SEQUENCE
+            // ─────────────────────────────────────────────
+            function init() {
+                // Simulate loading (preload first few images)
+                const preloadCount = Math.min(6, PHOTOS.length);
+                let loadedCount = 0;
+
+                function imageLoaded() {
+                    loadedCount++;
+                    if (loadedCount >= preloadCount) {
+                        finishLoading();
+                    }
+                }
+
+                for (let i = 0; i < preloadCount; i++) {
+                    const img = new Image();
+                    img.onload = imageLoaded;
+                    img.onerror = imageLoaded; // proceed even on error
+                    img.src = PHOTOS[i];
+                }
+
+                // Fallback: if images take too long, show after 2.5s anyway
+                const loadingFallback = setTimeout(() => {
+                    finishLoading();
+                }, 2500);
+
+                function finishLoading() {
+                    clearTimeout(loadingFallback);
+                    // Hide loading overlay
+                    loadingOverlay.classList.add('hidden');
+                    // Intro is already visible; user clicks button to open album
+                }
+            }
+
+            // ─────────────────────────────────────────────
+            // EVENT LISTENERS
+            // ─────────────────────────────────────────────
+            btnOpenAlbum.addEventListener('click', openAlbum);
+
+            btnPause.addEventListener('click', () => {
+                if (!albumOpen) return;
+                setPaused(!isPaused);
+            });
+
+            // Back link — change the href to your main website
+            backLink.addEventListener('click', (e) => {
+                // Default: go back in history
+                // Replace with your main website URL:
+                // e.preventDefault();
+                // window.location.href = 'https://your-main-website.com';
+                if (document.referrer && document.referrer !== window.location.href) {
+                    // If there's a referring page, go back
+                    e.preventDefault();
+                    window.history.back();
+                }
+                // Otherwise, the default '#' does nothing
+            });
+
+            // Keyboard controls
+            document.addEventListener('keydown', (e) => {
+                if (!albumOpen) {
+                    if (e.key === 'Enter' || e.key === ' ' || e.key === 'o') {
+                        e.preventDefault();
+                        openAlbum();
+                    }
+                    return;
+                }
+                if (e.key === ' ' || e.key === 'p') {
+                    e.preventDefault();
+                    setPaused(!isPaused);
+                }
+                if (e.key === 'ArrowRight' && !isTurning && albumOpen) {
+                    e.preventDefault();
+                    cancelAutoTurn();
+                    cancelAutoResume();
+                    if (isPaused) setPaused(false);
+                    performPageTurn();
+                }
+                if (e.key === 'ArrowLeft' && !isTurning && albumOpen && currentSpread > 0) {
+                    e.preventDefault();
+                    cancelAutoTurn();
+                    cancelAutoResume();
+                    // Go back one spread (simplified: just go to previous)
+                    currentSpread = (currentSpread - 1 + totalSpreads) % totalSpreads;
+                    updateVisiblePages(currentSpread);
+                    resetTurningPage();
+                    if (isPaused) setPaused(false);
+                    scheduleAutoTurn();
+                }
+            });
+
+            // Touch swipe support for mobile
+            let touchStartX = 0;
+            let touchStartY = 0;
+            document.addEventListener('touchstart', (e) => {
+                if (!albumOpen) return;
+                touchStartX = e.touches[0].clientX;
+                touchStartY = e.touches[0].clientY;
+            }, { passive: true });
+
+            document.addEventListener('touchend', (e) => {
+                if (!albumOpen || isTurning) return;
+                const dx = (e.changedTouches[0]?.clientX || touchStartX) - touchStartX;
+                const dy = (e.changedTouches[0]?.clientY || touchStartY) - touchStartY;
+                const absDx = Math.abs(dx);
+                const absDy = Math.abs(dy);
+
+                // Only trigger if horizontal swipe dominates
+                if (absDx > absDy && absDx > 50) {
+                    cancelAutoTurn();
+                    cancelAutoResume();
+                    if (dx < 0) {
+                        // Swipe left — next page
+                        if (isPaused) setPaused(false);
+                        performPageTurn();
+                    } else if (dx > 0 && currentSpread > 0) {
+                        // Swipe right — previous page
+                        currentSpread = (currentSpread - 1 + totalSpreads) % totalSpreads;
+                        updateVisiblePages(currentSpread);
+                        resetTurningPage();
+                        if (isPaused) setPaused(false);
+                        scheduleAutoTurn();
+                    }
+                }
+            });
+
+            // Handle window visibility (pause when tab is hidden)
+            document.addEventListener('visibilitychange', () => {
+                if (document.hidden && albumOpen && !isPaused) {
+                    cancelAutoTurn();
+                    // Will auto-resume when visible again
+                } else if (!document.hidden && albumOpen && !isPaused && !isTurning) {
+                    scheduleAutoTurn();
+                }
+            });
+
+            // ─────────────────────────────────────────────
+            // START
+            // ─────────────────────────────────────────────
+            init();
+
+            // ─────────────────────────────────────────────
+            // EXPORT FOR DEBUG (optional)
+            // ─────────────────────────────────────────────
+            console.log('✨ Magic Photo Album ready.');
+            console.log('   Photos loaded:', PHOTOS.length);
+            console.log('   Total spreads:', totalSpreads);
+            console.log('   Click "✨ Open Magic Album" to begin the magic.');
+        })();
+    </script>
+</body>
+</html>
