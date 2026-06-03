@@ -621,3 +621,31 @@ body {
     opacity: 0.7;
   }
 }
+/* SPECIAL SONG SECTION */
+
+.special-song-section{
+  text-align:center;
+  margin:80px 20px;
+  padding:40px 20px;
+  border-radius:30px;
+  background: rgba(255,255,255,0.05);
+  backdrop-filter: blur(10px);
+  border:1px solid rgba(255,215,0,0.3);
+  box-shadow:0 0 30px rgba(255,215,0,0.15);
+}
+
+.special-song-section h2{
+  color:#ffd86b;
+  font-size:2rem;
+  margin-bottom:10px;
+}
+
+.special-song-section p{
+  color:#ddd;
+  margin-bottom:20px;
+}
+
+.special-song-player{
+  width:90%;
+  max-width:500px;
+}
