@@ -350,11 +350,19 @@ setInterval(() => {
 
 // ===== MAGIC PHOTO ALBUM =====
 const albumImages = [
-  "IMG-20260528-WA0033.jpg",
-  "IMG-20260528-WA0016.jpg",
-  "IMG-20260528-WA0032.jpg",
-  "IMG-20260528-WA0021.jpg"
+  "IMG_20260603_161130.png",
+  "IMG_20260603_161145.png",
+  "IMG_20260603_161207.png",
+  "IMG_20260603_161227.png",
+  "IMG_20260603_161247.png",
+  "IMG_20260603_162221.png",
+  "IMG_20260603_162242.png",
+  "IMG_20260603_162258.png",
+  "IMG_20260603_162320.png",
+  "IMG_20260603_162342.png",
+  "IMG_20260603_162358.png"
 ];
+
 
 const openAlbumBtn = document.getElementById("openAlbumBtn");
 const albumContainer = document.getElementById("albumContainer");
